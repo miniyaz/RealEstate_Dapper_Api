@@ -1,0 +1,222 @@
+﻿@using Microsoft.AspNetCore.SignalR
+@model List<ResultTemperatureDto>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(() => {
+        var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44324/SignalRHub").build();
+        $("#connstatus").text(connection.state);
+
+        connection.start().then(() => {
+            $("#connstatus").text(connection.state);
+            setInterval(() => {
+                connection.invoke("SendActiveTemperatureCount");
+                connection.invoke("SendPassiveTemperatureCount");
+                connection.invoke("SendAverageTemperatureCount");
+                connection.invoke("SendHighTemperature");
+                connection.invoke("SendLowTemperature");
+                connection.invoke("SendNewTemperature");
+                connection.invoke("SendLastTemperature");
+                connection.invoke("SendTemperatureDifference");
+                connection.invoke("SendTemperatureNameMax");
+                connection.invoke("SendTemperatureNameMin");
+            }, 1000);
+        }).catch((err) => { console.log(err); });
+
+        connection.on("ReceiveActiveTemperatureCount", (value) => {
+            $("#ActiveTemperatureCount").text(value);
+        });
+
+        connection.on("ReceivePassiveTemperatureCount", (value) => {
+            $("#PassiveTemperatureCount").text(value);
+        });
+
+        connection.on("ReceiveAverageTemperatureCount", (value) => {
+            $("#AverageTemperatureCount").text(value);
+        });
+
+        connection.on("ReceiveHighTemperature", (value) => {
+            $("#HighTemperature").text(value);
+        });
+
+        connection.on("ReceiveLowTemperature", (value) => {
+            $("#LowTemperature").text(value);
+        });
+
+        connection.on("ReceiveNewTemperature", (value) => {
+            $("#NewTemperature").text(value);
+        });
+
+        connection.on("ReceiveLastTemperature", (value) => {
+            $("#LastTemperature").text(value);
+        });
+
+        connection.on("ReceiveTemperatureDifference", (value) => {
+            $("#TemperatureDifference").text(value);
+        });
+
+        connection.on("ReceiveTemperatureNameMax", (value) => {
+            $("#TemperatureNameMax").text(value);
+        });
+
+        connection.on("ReceiveTemperatureNameMin", (value) => {
+            $("#TemperatureNameMin").text(value);
+        });
+    });
+</script>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Aktif Sıcaklık</p>
+                    <h6 class="mb-0" id="ActiveTemperatureCount">@ViewBag.activeTemperatureCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Pasif Sıcaklık</p>
+                    <h6 class="mb-0" id="PassiveTemperatureCount">@ViewBag.passiveTemperatureCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Sıcaklık Ortalama</p>
+                    <h6 class="mb-0" id="AverageTemperatureCount">@ViewBag.averageTemperatureCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">En Yüksek Sıcaklık</p>
+                    <h6 class="mb-0" id="hightemperature">@ViewBag.hightemperature</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">En Düşük Sıcaklık</p>
+                    <h6 class="mb-0" id="lowtemperature">@ViewBag.lowTemperature</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">İlk Eklenen Sıcaklık</p>
+                    <h6 class="mb-0" id="NewTemperature">@ViewBag.newTemperature</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Son Eklenen Sıcaklık</p>
+                    <h6 class="mb-0" id="LastTemperature">@ViewBag.lastTemperature</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">En Çok Girilen S.</p>
+                    <h6 class="mb-0" id="TemperatureNameMax">@ViewBag.temperatureNameMax</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">En Az Girilen S.</p>
+                    <h6 class="mb-0" id="TemperatureNameMin">@ViewBag.temperatureNameMin</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Sıcaklık Fark(Y-D)</p>
+                    <h6 class="mb-0" id="TemperatureDifference">@ViewBag.temperatureDifference</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*@foreach(var item in Model)
+{
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-rocket fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">@item.TemperatureName</p>
+                        <h6 class="mb-0">@item.Value @item.Unit</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-rocket fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">@item.TemperatureName</p>
+                        <h6 class="mb-0">@item.Value @item.Unit</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-rocket fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">@item.TemperatureName</p>
+                        <h6 class="mb-0">@item.Value @item.Unit</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-rocket fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">@item.TemperatureName</p>
+                        <h6 class="mb-0">@item.Value @item.Unit</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+*@

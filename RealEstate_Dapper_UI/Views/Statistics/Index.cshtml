@@ -1,0 +1,291 @@
+﻿@using Microsoft.AspNetCore.SignalR
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(() => {
+        var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44324/SignalRHub").build();
+        $("#connstatus").text(connection.state);
+
+        connection.start().then(() => {
+            $("#connstatus").text(connection.state);
+            setInterval(() => {
+                connection.invoke("SendActiveCategoryCount");
+                connection.invoke("SendActiveEmployeeCount");
+                connection.invoke("SendApartmentCount");
+                connection.invoke("SendAverageProductPriceByRent");
+                connection.invoke("SendAverageProductPriceBySale");
+                connection.invoke("SendAverageRoomCount");
+                connection.invoke("SendCategoryCount");
+                connection.invoke("SendCategoryNameByMaxProductCount");
+                connection.invoke("SendCityNameByMaxProductCount");
+                connection.invoke("SendDifferentCityCount");
+                connection.invoke("SendEmployeeNameByMaxProductCount");
+                connection.invoke("SendLastProductPrice");
+                connection.invoke("SendNewestBuildingYear");
+                connection.invoke("SendOldestBuildingYear");
+                connection.invoke("SendPassiveCategoryCount");
+                connection.invoke("SendProductCount");
+            }, 1000);
+        }).catch((err) => { console.log(err); });
+
+        connection.on("ReceiveActiveCategoryCount", (value) => {
+            $("#ActiveCategoryCount").text(value);
+        });
+
+        connection.on("ReceiveActiveEmployeeCount", (value) => {
+            $("#ActiveEmployeeCount").text(value);
+        });
+
+        connection.on("ReceiveApartmentCount", (value) => {
+            $("#ApartmentCount").text(value);
+        });
+
+        connection.on("ReceiveAverageProductPriceByRent", (value) => {
+            $("#AverageProductPriceByRent").text(value);
+        });
+
+        connection.on("ReceiveAverageProductPriceBySale", (value) => {
+            $("#AverageProductPriceBySale").text(value);
+        });
+
+        connection.on("ReceiveCategoryCount", (value) => {
+            $("#CategoryCount").text(value);
+        });
+
+        connection.on("ReceiveAverageRoomCount", (value) => {
+            $("#AverageRoomCount").text(value);
+        });
+
+        connection.on("ReceiveCategoryNameByMaxProductCount", (value) => {
+            $("#CategoryNameByMaxProductCount").text(value);
+        });
+
+        connection.on("ReceiveCityNameByMaxProductCount", (value) => {
+            $("#CityNameByMaxProductCount").text(value);
+        });
+
+        connection.on("ReceiveDifferentCityCount", (value) => {
+            $("#DifferentCityCount").text(value);
+        });
+
+        connection.on("ReceiveEmployeeNameByMaxProductCount", (value) => {
+            $("#EmployeeNameByMaxProductCount").text(value);
+        });
+
+        connection.on("ReceiveLastProductPrice", (value) => {
+            $("#LastProductPrice").text(value);
+        });
+
+        connection.on("ReceiveNewestBuildingYear", (value) => {
+            $("#NewestBuildingYear").text(value);
+        });
+
+        connection.on("ReceiveOldestBuildingYear", (value) => {
+            $("#OldestBuildingYear").text(value);
+        });
+
+        connection.on("ReceivePassiveCategoryCount", (value) => {
+            $("#PassiveCategoryCount").text(value);
+        });
+
+        connection.on("ReceiveProductCount", (value) => {
+            $("#ProductCount").text(value);
+        });
+    });
+</script>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-address-book fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Aktif Kategori</p>
+                    <h6 class="mb-0" id="ActiveCategoryCount">@ViewBag.activeCategoryCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-briefcase fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Aktif Personel</p>
+                    <h6 class="mb-0" id="ActiveEmployeeCount">@ViewBag.activeEmployeeCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-building fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Daire İlan Sayısı</p>
+                    <h6 class="mb-0" id="ApartmentCount">@ViewBag.apartmentCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-rocket fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Ortalama Kira</p>
+                    <h6 class="mb-0" id="AverageProductPriceByRent">@ViewBag.averageProductPriceByRent</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-line fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Ortalama Satış F.</p>
+                    <h6 class="mb-0" id="AverageProductPriceBySale">@ViewBag.averageProductPriceBySale</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Ortalama Oda Adet</p>
+                    <h6 class="mb-0" id="AverageRoomCount">@ViewBag.averageRoomCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-area fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Kategori Sayısı</p>
+                    <h6 class="mb-0" id="CategoryCount">@ViewBag.categoryCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">En İyi Kategori</p>
+                    <h6 class="mb-0" id="CategoryNameByMaxProductCount">@ViewBag.categoryNameByMaxProductCount</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-star fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">İlan-Şehir</p>
+                    <h6 class="mb-0" id="CityNameByMaxProductCount">@ViewBag.cityNameByMaxProductCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-gamepad fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Şehir Sayısı</p>
+                    <h6 class="mb-0" id="DifferentCityCount">@ViewBag.differentCityCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-user fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">İlan-Personel</p>
+                    <h6 class="mb-0" id="EmployeeNameByMaxProductCount">@ViewBag.employeeNameByMaxProductCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-tag fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Son İlan F.</p>
+                    <h6 class="mb-0" id="LastProductPrice">@ViewBag.lastProductPrice</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-building fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Yeni Yapı Yılı</p>
+                    <h6 class="mb-0" id="NewestBuildingYear">@ViewBag.newestBuildingYear</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-building fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Eski Yapı Yılı</p>
+                    <h6 class="mb-0" id="OldestBuildingYear">@ViewBag.oldestBuildingYear</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-circle fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Pasif Kategori</p>
+                    <h6 class="mb-0" id="PassiveCategoryCount">@ViewBag.passiveCategoryCount</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-box fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">İlan Sayısı</p>
+                    <h6 class="mb-0" id="ProductCount">@ViewBag.productCount</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* <div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Sıcaklık Adı</th>
+                <th scope="col">Değeri</th>
+                <th scope="col">Birim</th>
+                <th scope="col">Durumu</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TemperatureID</td>
+                    <td>@item.TemperatureName</td>
+                    <td>@item.Value </td>
+                    <td>@item.Unit</td>
+                    <td>@item.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a href="/Employee/CreateEmployee/" class="btn btn-outline-info">Yeni Personel Girişi</a>
+</div> *@
